@@ -20,8 +20,14 @@ func Load(serverAddress, httpPort, token string) *Configuration {
 }
 
 func newServerUrl(serverAddress, serverPort string) string {
-	if len(strings.TrimSpace(serverPort)) == 0 {
-		return fmt.Sprintf("%s/", strings.TrimRight(serverAddress, "/"))
+	addr := serverAddress
+	if !strings.HasPrefix(addr, "http://") && !strings.HasPrefix(addr, "https://") {
+		addr = "http://" + addr
 	}
-	return fmt.Sprintf("http://%s:%s/", serverAddress, serverPort)
+	addr = strings.TrimRight(addr, "/")
+
+	if len(strings.TrimSpace(serverPort)) == 0 {
+		return fmt.Sprintf("%s/", addr)
+	}
+	return fmt.Sprintf("%s:%s/", addr, serverPort)
 }
